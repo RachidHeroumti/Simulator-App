@@ -1,0 +1,20 @@
+{
+  "EN": {
+    "appName": "Currency Converter",
+    "select_all": "Select All Currencies",
+    "selected_currency": "Selected Currencies",
+    "auto_select": "Auto Currency Switch"
+  },
+  "FR": {
+    "appName": "Convertisseur de devises",
+    "select_all": "Sélectionner toutes les devises",
+    "selected_currency": "Devises sélectionnées",
+    "auto_select": "Changement automatique de devise"
+  },
+  "AR": {
+    "appName": "محول العملات",
+    "select_all": "تحديد كل العملات",
+    "selected_currency": "العملات المحددة",
+    "auto_select": "تبديل العملة تلقائيًا"
+  }
+}

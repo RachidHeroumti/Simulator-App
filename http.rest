@@ -1,0 +1,33 @@
+# Prod
+@token =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZSI6eyJfaWQiOiI2NzFhMGQ4MWJkMTViOTAwMTIyNTY2NDEifSwic291cmNlIjoiVEhFTUVTIiwiaWF0IjoxNzMzNDg0NjMxLCJleHAiOjE3NjUwMjA2MzF9.CSeoQaIg0-HHSLBbSwNXVBOPQjn2zvFikp0jZX3XvWg
+###
+GET https://api-stores.storeino.world/api/apps/search/?route=simulator
+X-Auth-Token: {{token}}
+
+###
+POST https://api-stores.storeino.world/api/apps/create
+Content-Type: application/json
+X-Auth-Token: {{token}}
+
+{
+    "team": {
+      "_id": "650abc8b4436be012bd6b648",
+        "name": "StoreinoApps",
+        "url": "#"
+    },
+    "images": ["https://storeno.b-cdn.net/stores/12-2024/1734695919367.png"],
+     "placement": "BEFORE_FOOTER",
+    "adminPlacement": "NONE",
+    "isActive": true,
+    "autoRenew": false,
+    "description": "simulator application to help in calculation of profites",
+    "name": "Simulator",
+    "route": "simulator",
+    "price":0,
+    "config": {
+ 
+        },
+          "default": {
+     },
+    "expiryDate": "2029-11-07T13:21:57.398Z"
+}

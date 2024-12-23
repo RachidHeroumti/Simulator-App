@@ -1,0 +1,174 @@
+<div class="w-full flex flex-col">
+  <script src="../storeino-app-admin.js"></script>
+  <link
+    href="https://cdn.jsdelivr.net/npm/tailwindcss@latest/dist/tailwind.min.css"
+    rel="stylesheet"
+  />
+
+  <div
+    style="background-color: #ebf0f6; color: black;"
+    class="h-screen"
+    id="app_simulator"
+    v-if="data"
+  >
+    <template>
+      <div
+      class=" w-full "
+      v-if="data"
+    >
+    <div class="tabs">
+      <div class="tab-headers ">
+        <button
+          v-for="(tab, index) in tabs"
+          :key="index"
+          :class="{ active: activeTab === tab.name }"
+        >
+        <div class=" w-full"
+     
+        :class="[
+          'py-2 px-4 text-sm font-medium rounded-t-lg transition-all',
+          activeTab === tab.name
+            ? 'text-white bg-green-700 '
+            : 'text-gray-950 '
+        ]"
+        @click="selectTab(tab.name)"
+        > 
+
+          {{ tab.title }}
+        </div>
+        </button>
+      </div>
+
+      <div class="tab-content">
+        <div v-for="tab in tabs" :key="tab.name" 
+        v-if="activeTab === tab.name">
+        
+        <div v-if="tab.name === 'home'">
+          <div class="gap-4 flex flex-wrap">
+            <div>
+              <label class="block text-sm font-medium text-gray-700">
+                Buy Cost
+              </label>
+              <input
+                v-model="buyPrice"
+                type="text"
+                placeholder="Enter production cost"
+                class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
+              />
+            </div>
+        
+            <div>
+              <label class="block text-sm font-medium text-gray-700">
+                Ads Cost
+              </label>
+              <input
+                v-model="adscost"
+                type="text"
+                placeholder="Enter ads cost"
+                class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
+              />
+            </div>
+        
+            <div>
+              <label class="block text-sm font-medium text-gray-700">
+                Order (Number)
+              </label>
+              <input
+                v-model="ordersLeadNumber"
+                type="text"
+                placeholder="How many orders"
+                class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
+              />
+            </div>
+        
+            <div>
+              <label class="block text-sm font-medium text-gray-700">
+                Confirmation (Number)
+              </label>
+              <input
+                v-model="ConfirmedLeadNumber"
+                type="text"
+                placeholder="How many orders confirmed"
+                class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
+              />
+            </div>
+        
+            <div>
+              <label class="block text-sm font-medium text-gray-700">
+                Sale Price
+              </label>
+              <input
+                v-model="SalePrice"
+                type="text"
+                placeholder="Enter Sale Price"
+                class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
+              />
+            </div>
+          </div>
+        
+          <h1 class="text-xl font-medium mt-6 pb-2 currency">Cost Per</h1>
+          <div class="gap-4 flex flex-wrap">
+            <div>
+              <label class="block text-sm font-medium text-gray-700">
+                Confirmation
+              </label>
+              <input
+                v-model="confirmationcost"
+                type="text"
+                placeholder="Cost per Confirmation"
+                class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
+              />
+            </div>
+        
+            <div>
+              <label class="block text-sm font-medium text-gray-700">
+                Stockage
+              </label>
+              <input
+                v-model="stockagecost"
+                type="text"
+                placeholder="Cost per Stockage"
+                class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
+              />
+            </div>
+        
+            <div>
+              <label class="block text-sm font-medium text-gray-700">
+                Delivery
+              </label>
+              <input
+                v-model="deliverycost"
+                type="text"
+                placeholder="Cost per Delivery"
+                class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
+              />
+            </div>
+        
+            <div>
+              <label class="block text-sm font-medium text-gray-700">
+                Lead
+              </label>
+              <input
+                v-model="LeadPrice"
+                type="text"
+                placeholder="Lead Price"
+                class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
+              />
+            </div>
+          </div>
+        
+          <!-- Profit Section -->
+          <div class="profit flex justify-between items-center mt-4 bg-gray-100 p-4 rounded-lg shadow-inner">
+            <span class="text-gray-700 font-medium">Profit</span>
+            <span class="text-green-600 text-lg font-semibold">{{ profits }}</span>
+          </div>
+        </div>
+        
+        </div>
+      </div>
+    </div>
+    
+    </div>
+    </template>
+  </div>
+</div>
