@@ -6,169 +6,314 @@
   />
 
   <div
-    style="background-color: #ebf0f6; color: black;"
+    style="background-color: #ececec; color: black"
     class="h-screen"
     id="app_simulator"
     v-if="data"
   >
     <template>
-      <div
-      class=" w-full "
-      v-if="data"
-    >
-    <div class="tabs">
-      <div class="tab-headers ">
-        <button
-          v-for="(tab, index) in tabs"
-          :key="index"
-          :class="{ active: activeTab === tab.name }"
-        >
-        <div class=" w-full"
-     
-        :class="[
+      <div class="w-full" v-if="data">
+        <div class="tabs">
+          <div class="tab-headers">
+            <button
+              v-for="(tab, index) in tabs"
+              :key="index"
+              :class="{ active: activeTab === tab.name }"
+            >
+              <div
+                class="w-full"
+                :style="{ backgroundColor: activeTab === tab.name ? '#e16f23' : '' }"
+
+                :class="[
           'py-2 px-4 text-sm font-medium rounded-t-lg transition-all',
           activeTab === tab.name
-            ? 'text-white bg-green-700 '
+            ? 'text-white '
             : 'text-gray-950 '
         ]"
-        @click="selectTab(tab.name)"
-        > 
+                @click="selectTab(tab.name)"
+              >
+                {{ tab.title }}
+              </div>
+            </button>
+          </div>
 
-          {{ tab.title }}
-        </div>
-        </button>
-      </div>
+          <div class="tab-content">
+            <div
+              v-for="tab in tabs"
+              :key="tab.name"
+              v-if="activeTab === tab.name"
+            >
+              <div v-if="tab.name === 'main'">
+                <div class="flex justify-between">
+                  <div class="w-3/4">
+                    <div class="gap-2 flex flex-wrap">
+                      <div>
+                        <label
+                          class="flex items-center p-1 space-x-2 text-sm font-medium text-gray-700 gap-2"
+                        >
+                          <span>Buy Cost</span>
+                          <span v-html="svg('buy')"></span>
+                        </label>
+                        <input
+                          v-model="buyPrice"
+                          type="text"
+                          placeholder="Enter production cost"
+                          class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
+                        />
+                      </div>
 
-      <div class="tab-content">
-        <div v-for="tab in tabs" :key="tab.name" 
-        v-if="activeTab === tab.name">
-        
-        <div v-if="tab.name === 'home'">
-          <div class="gap-4 flex flex-wrap">
-            <div>
-              <label class="block text-sm font-medium text-gray-700">
-                Buy Cost
-              </label>
-              <input
-                v-model="buyPrice"
-                type="text"
-                placeholder="Enter production cost"
-                class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
-              />
-            </div>
-        
-            <div>
-              <label class="block text-sm font-medium text-gray-700">
-                Ads Cost
-              </label>
-              <input
-                v-model="adscost"
-                type="text"
-                placeholder="Enter ads cost"
-                class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
-              />
-            </div>
-        
-            <div>
-              <label class="block text-sm font-medium text-gray-700">
-                Order (Number)
-              </label>
-              <input
-                v-model="ordersLeadNumber"
-                type="text"
-                placeholder="How many orders"
-                class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
-              />
-            </div>
-        
-            <div>
-              <label class="block text-sm font-medium text-gray-700">
-                Confirmation (Number)
-              </label>
-              <input
-                v-model="ConfirmedLeadNumber"
-                type="text"
-                placeholder="How many orders confirmed"
-                class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
-              />
-            </div>
-        
-            <div>
-              <label class="block text-sm font-medium text-gray-700">
-                Sale Price
-              </label>
-              <input
-                v-model="SalePrice"
-                type="text"
-                placeholder="Enter Sale Price"
-                class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
-              />
+                      <div>
+                        <div>
+                          <label
+                            class="flex items-center p-1 space-x-2 text-sm font-medium text-gray-700 gap-2"
+                          >
+                            <span>Ads Cost</span>
+                            <span v-html="svg('ads')"></span>
+                          </label>
+                          <input
+                            v-model="adscost"
+                            type="text"
+                            placeholder="Enter ads cost"
+                            class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label
+                          class="flex items-center p-1 space-x-2 text-sm font-medium text-gray-700 gap-2"
+                        >
+                          <span> Order (Number)</span>
+                          <span v-html="svg('ordered')"></span>
+                        </label>
+                        <input
+                          v-model="ordersLeadNumber"
+                          type="text"
+                          placeholder="How many orders"
+                          class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
+                        />
+                      </div>
+
+                      <div>
+                        <label
+                          class="flex items-center p-1 space-x-2 text-sm font-medium text-gray-700 gap-2"
+                        >
+                          <span>Confirmation (Number)</span>
+                          <span v-html="svg('confirmed')"></span>
+                        </label>
+                        <input
+                          v-model="ConfirmedLeadNumber"
+                          type="text"
+                          placeholder="How many orders confirmed"
+                          class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
+                        />
+                      </div>
+                      <div>
+                        <label
+                          class="flex items-center p-1 space-x-2 text-sm font-medium text-gray-700 gap-2"
+                        >
+                          <span>Delivered (Lead Number)</span>
+                          <span v-html="svg('deleivred')"></span>
+                        </label>
+                        <input
+                          v-model="DeliverdLeadNumber"
+                          type="text"
+                          placeholder="Enter Sale Price"
+                          class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
+                        />
+                      </div>
+
+                      <div>
+                        <label
+                          class="flex items-center p-1 space-x-2 text-sm font-medium text-gray-700 gap-2"
+                        >
+                          <span>Sale Price</span>
+                          <span v-html="svg('sell')"></span>
+                        </label>
+                        <input
+                          v-model="SalePrice"
+                          type="text"
+                          placeholder="Enter Sale Price"
+                          class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
+                        />
+                      </div>
+                    </div>
+                    <div class="w-full mt-4">
+                      <h1
+                        class="text-lg font-bold flex items-center text-green-700 mb-2 pb-2 gap-2 flex"
+                      >
+                        <span>Details</span>
+                        <span
+                          v-html="svg(ShowDetails ? 'close' : 'open')"
+                          @click="ShowDetails = !ShowDetails"
+                          class="cursor-pointer text-red-500 hover:text-red-700"
+                        ></span>
+                      </h1>
+                      <div
+                        v-if="ShowDetails"
+                        class="gap-2 bg-white flex flex-wrap p-4"
+                      >
+                        <div>
+                          <label
+                            class="block text-sm font-medium text-green-700"
+                          >
+                            Ads Cost per lead
+                          </label>
+                          <input
+                            v-model="realAdsCost"
+                            type="text"
+                            disabled
+                            placeholder="Enter Real Ads Cost"
+                            class="mt-1 w-full px-3 py-2 border border-green-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
+                          />
+                        </div>
+                        <div>
+                          <label
+                            class="block text-sm font-medium text-green-700"
+                          >
+                            Total Confirmation Cost
+                          </label>
+                          <input
+                            v-model="confirmationTotalCost"
+                            type="text"
+                            disabled
+                            placeholder="Enter Confirmation Cost"
+                            class="mt-1 w-full px-3 py-2 border border-green-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
+                          />
+                        </div>
+                        <div>
+                          <label
+                            class="block text-sm font-medium text-green-700"
+                          >
+                            Total Storage Cost
+                          </label>
+                          <input
+                            v-model="storageTotalCost"
+                            type="text"
+                            disabled
+                            placeholder="Enter Storage Cost"
+                            class="mt-1 w-full px-3 py-2 border border-green-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
+                          />
+                        </div>
+                        <div>
+                          <label
+                            class="block text-sm font-medium text-green-700"
+                          >
+                            Total Delivery Cost
+                          </label>
+                          <input
+                            v-model="deliveryTotalCost"
+                            type="text"
+                            disabled
+                            placeholder="Enter Delivery Cost"
+                            class="mt-1 w-full px-3 py-2 border border-green-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="flex flex-col  md:px-5 w-1/4">
+                    <h1 class="text-xl font-medium pb-2 currency">
+                      Cost Per Lead
+                    </h1>
+                    <div class="gap-4 flex flex-wrap">
+                      <div>
+                        <label class="block text-sm font-medium text-gray-700">
+                          Confirmation
+                        </label>
+                        <input
+                          v-model="confirmationcost"
+                          type="text"
+                          placeholder="Cost per Confirmation"
+                          class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
+                        />
+                      </div>
+
+                      <div>
+                        <label class="block text-sm font-medium text-gray-700">
+                          Stockage
+                        </label>
+                        <input
+                          v-model="stockagecost"
+                          type="text"
+                          placeholder="Cost per Stockage"
+                          class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
+                        />
+                      </div>
+
+                      <div>
+                        <label class="block text-sm font-medium text-gray-700">
+                          Delivery
+                        </label>
+                        <input
+                          v-model="deliverycost"
+                          type="text"
+                          placeholder="Cost per Delivery"
+                          class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
+                        />
+                      </div>
+
+                      <!-- <div>
+                <label class="block text-sm font-medium text-gray-700">
+                  Lead
+                </label>
+                <input
+                  v-model="LeadPrice"
+                  type="text"
+                  placeholder="Lead Price"
+                  class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
+                />
+              </div> -->
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Profit Section -->
+                <div
+                  class="profit flex justify-center gap-2 space-x-2 items-center mt-4 bg-gray-100 p-4 rounded-lg"
+                >
+                  <span class="text-gray-700 font-medium">Profit</span>
+                  <span
+                    :class="{'text-green-600': profits >= 0, 'text-red-600': profits < 0}"
+                    class="text-lg font-semibold"
+                  >
+                    {{ profits }}
+                  </span>
+                </div>
+              </div>
+              <div v-if="tab.name === 'settings'" class="">
+
+                <div> 
+                  <h3 class="text-lg font-semibold mb-4">Delivery Settings</h3>
+                  <div class="mb-4">
+                    <label for="country" class="block text-sm font-medium text-gray-700">Country</label>
+                    <select id="country" class="mt-1 p-2 block rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                      <option value="morocco">Morocco</option>
+                      <option value="algeria">Algeria</option>
+                      <option value="tunisia">Tunisia</option>
+                      <option value="egypt">Egypt</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label for="shipping-company" class="block text-sm font-medium text-gray-700">Shipping Company</label>
+                    <select id="shipping-company" class="mt-1 block p-2 rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                      <option value="aramax">Aramex (Morocco and Africa)</option>
+                      <option value="dhl">DHL Express (Global, including Africa)</option>
+                      <option value="fedex">FedEx (Global, including Morocco)</option>
+                      <option value="yamato">Yamato (Japan to Africa)</option>
+                    </select>
+                  </div>
+
+                </div>
+             
+              </div>
+              
             </div>
           </div>
-        
-          <h1 class="text-xl font-medium mt-6 pb-2 currency">Cost Per</h1>
-          <div class="gap-4 flex flex-wrap">
-            <div>
-              <label class="block text-sm font-medium text-gray-700">
-                Confirmation
-              </label>
-              <input
-                v-model="confirmationcost"
-                type="text"
-                placeholder="Cost per Confirmation"
-                class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
-              />
-            </div>
-        
-            <div>
-              <label class="block text-sm font-medium text-gray-700">
-                Stockage
-              </label>
-              <input
-                v-model="stockagecost"
-                type="text"
-                placeholder="Cost per Stockage"
-                class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
-              />
-            </div>
-        
-            <div>
-              <label class="block text-sm font-medium text-gray-700">
-                Delivery
-              </label>
-              <input
-                v-model="deliverycost"
-                type="text"
-                placeholder="Cost per Delivery"
-                class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
-              />
-            </div>
-        
-            <div>
-              <label class="block text-sm font-medium text-gray-700">
-                Lead
-              </label>
-              <input
-                v-model="LeadPrice"
-                type="text"
-                placeholder="Lead Price"
-                class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
-              />
-            </div>
-          </div>
-        
-          <!-- Profit Section -->
-          <div class="profit flex justify-between items-center mt-4 bg-gray-100 p-4 rounded-lg shadow-inner">
-            <span class="text-gray-700 font-medium">Profit</span>
-            <span class="text-green-600 text-lg font-semibold">{{ profits }}</span>
-          </div>
-        </div>
-        
         </div>
       </div>
-    </div>
-    
-    </div>
     </template>
   </div>
 </div>
