@@ -1,10 +1,15 @@
-// menu = items in menu (note will help)
 var vm = new StoreinoApp({
   el: "#app_simulator",
+
   data: {
     data: __DATA__,
     tabs: [
-      { name: "main", title: "Main", content: "Welcome to the Home Tab" },
+      { name: "main", title: "Main", content: "Welcome to the Mian Tab" },
+      {
+        name: "analytics",
+        title: "Analytics",
+        content: "Welcome to Analytics Tab",
+      },
       {
         name: "settings",
         title: "Settings",
@@ -12,14 +17,18 @@ var vm = new StoreinoApp({
       },
     ],
     activeTab: "main",
-    ShowDetails: true,
+    ShowDetails: false,
+    toSaveData: false,
+    selectedMonth: "",
     buyPrice: 0,
     adscost: 0,
     ordersLeadNumber: 0,
+    ordersNumber: "-------",
     ConfirmedLeadNumber: 0,
     DeliverdLeadNumber: 0,
     confirmationcost: 0,
     stockagecost: 0,
+
     deliverycost: 0,
     LeadPrice: 0,
     SalePrice: 0,
@@ -28,12 +37,63 @@ var vm = new StoreinoApp({
     confirmationTotalCost: 0,
     storageTotalCost: 0,
     deliveryTotalCost: 0,
+    AnalyticsData: {},
+    chartData: {
+      labels: ["January", "February", "March", "April", "May", "June", "July"],
+      datasets: [
+        {
+          label: "Sales",
+          backgroundColor: "rgba(248, 121, 121, 0.5)",
+          borderColor: "#f87979",
+          data: [40, 20, 30, 50, 70, 60, 80],
+        },
+        {
+          label: "Revenue",
+          backgroundColor: "rgba(75, 192, 192, 0.5)",
+          borderColor: "#4bc0c0",
+          data: [35, 25, 45, 65, 85, 75, 95],
+        },
+        {
+          label: "Expenses",
+          backgroundColor: "#9966ff",
+          borderColor: "#9966ff",
+          data: [25, 15, 35, 55, 65, 50, 70],
+        },
+        {
+          label: "Profits",
+          backgroundColor: "rgba(25, 229, 87, 0.5)",
+          borderColor: "#19e557",
+          data: [0, 18, 44, 55, 90, 33, 21],
+        },
+      ],
+    },
+    sales: 0,
+    revenue: 0,
+    expenses: 0,
   },
   computed: {},
-  watch: {},
-  mounted() {},
+  mounted() {
+    const currnTDate = new Date();
+    const monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+    this.selectedMonth = monthNames[currnTDate.getMonth()];
+    console.log("🚀 ~ mounted ~  this.data:",  this.data)
+    this.AnalyticsData=this.data.AnalyticsData;
+    console.log("🚀 ~ mounted ~  this.AnalyticsData:",  this.AnalyticsData)
+  },
   watch: {
-    // You can calculate profits based on other data properties if needed
     buyPrice(val) {
       this.calculateProfits();
     },
@@ -64,26 +124,105 @@ var vm = new StoreinoApp({
     SalePrice(val) {
       this.calculateProfits();
     },
+    activeTab(val) {
+      console.log("🚀 ~ activeTab ~ val:", val);
+      if (val === "analytics") {
+        this.$nextTick(() => {
+          this.renderChart();
+        });
+      }
+    },
   },
   methods: {
-    validateFields(fields) {
-      for (const [key, value] of Object.entries(fields)) {
-        if (!value) {
-          console.error(`Required field "${key}" is missing!`);
-          return false;
-        }
+    saveDataAnalytics() {
+      const datasetConfig = {
+        Profits: { backgroundColor: "#19e557", borderColor: "#19e557" },
+        Expenses: { backgroundColor: "#9966ff", borderColor: "#9966ff" },
+        Revenue: { backgroundColor: "#4bc0c0", borderColor: "#4bc0c0" },
+        Sales: { backgroundColor: "#f87979", borderColor: "#f87979" },
+      };
+    
+      const currentMonthData = {
+        month: this.selectedMonth,
+        datasets: Object.entries(datasetConfig).map(([key, config]) => ({
+          label: key,
+          ...config,
+          value: this[key.toLowerCase()] || 0,
+        })),
+      };
+    
+      if (!this.AnalyticsData || !Array.isArray(this.AnalyticsData)) {
+        this.AnalyticsData = [];
       }
-      return true;
+    
+      const existingIndex = this.AnalyticsData.findIndex(
+        (data) => data.month === this.selectedMonth
+      );
+    
+      if (existingIndex !== -1) {
+        // Update existing month data
+        this.$set(this.AnalyticsData, existingIndex, currentMonthData);
+      } else {
+        // Add new month data
+        this.AnalyticsData.push(currentMonthData);
+      }
+    
+      // Update data.AnalyticsData with the latest AnalyticsData
+      this.$set(this.data, "AnalyticsData", [...this.AnalyticsData]);
+    
+      console.log("Updated AnalyticsData:", this.AnalyticsData);
+      this.toSaveData = false;
     },
-
-    resetFields(fields) {
-      fields.forEach((field) => (this[field] = ""));
+    renderChart() {
+      const canvas = document.getElementById("mychart");
+      console.log("🚀 ~ renderChart ~ canvas:", canvas);
+      if (canvas) {
+        const ctx = canvas.getContext("2d");
+        console.log("🚀 ~ renderChart ~ ctx:", ctx);
+    
+        // Prepare data for Chart.js
+        const labels = this.AnalyticsData.map((item) => item.month); // X-axis labels
+        const datasets = this.AnalyticsData[0]?.datasets.map((datasetConfig, index) => ({
+          label: datasetConfig.label,
+          backgroundColor: datasetConfig.backgroundColor,
+          borderColor: datasetConfig.borderColor,
+          borderWidth: 1,
+          data: this.AnalyticsData.map((item) => item.datasets[index].value), // Y-axis data for each dataset
+        }));
+    
+        // Create the chart
+        new Chart(ctx, {
+          type: "bar", // Choose chart type
+          data: {
+            labels, // Months (X-axis)
+            datasets, // Dynamic datasets based on AnalyticsData
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              x: {
+                title: {
+                  display: true,
+                  text: "Months",
+                },
+              },
+              y: {
+                title: {
+                  display: true,
+                  text: "Values",
+                },
+              },
+            },
+          },
+        });
+      } else {
+        console.error("Canvas element not found.");
+      }
     },
-
     selectTab(tabName) {
       this.activeTab = tabName;
     },
-
     calculateProfits() {
       const SalePrice = parseFloat(this.SalePrice ?? 0);
       const ordersLeadNumber = parseFloat(this.ordersLeadNumber ?? 0);
@@ -104,14 +243,15 @@ var vm = new StoreinoApp({
         confirmationcost * ordersLeadNumber +
         stockagecost * ordersLeadNumber +
         deleivredLeadNumber * buyPrice;
-
+      this.expenses = lost;
+      this.revenue = Geted;
+      this.sales = deleivredLeadNumber;
       console.log("🚀 ~ calculateProfits ~ lost:", lost);
       this.profits = Geted - lost;
 
       // Call `calculateTotalsCosts` directly using `this` properties
       this.calculateTotalsCosts();
     },
-
     calculateTotalsCosts() {
       const adscost = parseFloat(this.adscost ?? 0);
       const ConfirmedLeadNumber = parseFloat(this.ConfirmedLeadNumber ?? 0);
@@ -136,9 +276,9 @@ var vm = new StoreinoApp({
         delete:
           '<svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#5f6368"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>',
         add: '<svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#ffffff"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg>',
-        open: '<svg xmlns="http://www.w3.org/2000/svg"  height="20px" viewBox="0 -960 960 960" width="20px" fill="#047857"><path d="m280-400 200-200 200 200H280Z"/></svg>',
+        open: '<svg xmlns="http://www.w3.org/2000/svg"  height="24px" viewBox="0 -960 960 960" width="20px" fill="#00000"><path d="m280-400 200-200 200 200H280Z"/></svg>',
         close:
-          '<svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#047857"><path d="M480-360 280-560h400L480-360Z"/></svg>',
+          '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="20px" fill="#00000"><path d="M480-360 280-560h400L480-360Z"/></svg>',
         styles:
           '<svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#5f6368"><path d="M340-540H200q-33 0-56.5-23.5T120-620v-140q0-33 23.5-56.5T200-840h140q33 0 56.5 23.5T420-760v140q0 33-23.5 56.5T340-540Zm-140-80h140v-140H200v140Zm140 500H200q-33 0-56.5-23.5T120-200v-140q0-33 23.5-56.5T200-420h140q33 0 56.5 23.5T420-340v140q0 33-23.5 56.5T340-120Zm-140-80h140v-140H200v140Zm560-340H620q-33 0-56.5-23.5T540-620v-140q0-33 23.5-56.5T620-840h140q33 0 56.5 23.5T840-760v140q0 33-23.5 56.5T760-540Zm-140-80h140v-140H620v140Zm140 500H620q-33 0-56.5-23.5T540-200v-140q0-33 23.5-56.5T620-420h140q33 0 56.5 23.5T840-340v140q0 33-23.5 56.5T760-120Zm-140-80h140v-140H620v140ZM340-620Zm0 280Zm280-280Zm0 280Z"/></svg>',
         cancel:

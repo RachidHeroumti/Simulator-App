@@ -20,10 +20,8 @@
   font-family: Poppins;
 }
 #app_simulator .tabs {
-  border: 1px solid #ccc;
   border-radius: 5px;
   max-width: 100%;
-  margin: 50px auto;
   font-family: Arial, sans-serif;
 }
 #app_simulator .tab-headers {
@@ -41,7 +39,6 @@
 #app_simulator .tab-headers button.active {
   font-weight: bold;
   border-bottom: 2px solid #007bff;
-  color: #007bff;
 }
 #app_simulator .tab-content {
   padding: 20px;
@@ -77,4 +74,169 @@ input[type="color"]:focus {
   outline: none; /* Remove focus outline */
   border-color: #0056b3; /* Highlight border color on focus */
   box-shadow: 0 0 5px rgba(0, 86, 179, 0.5); /* Focus glow effect */
+}
+
+ 
+#app_simulator {
+
+}
+
+ #app_simulator .title {
+  color: #F14A00;
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+#app_simulator .radio-group {
+  display: flex;
+  gap: 1rem;
+
+}
+
+#app_simulator .radio-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+#app_simulator .radio-option input[type="radio"] {
+  accent-color: #F14A00;
+}
+
+#app_simulator .radio-option label {
+  font-size: 0.95rem;
+  color: #374151;
+}
+
+#app_simulator .input-grid {
+  display: flex;
+  gap: 1.5rem;
+}
+
+#app_simulator .input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+#app_simulator .input-group label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+#app_simulator .input-group input {
+  padding: 0.625rem;
+  border: 1px solid #E5E7EB;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+#app_simulator .input-group input:focus {
+  outline: none;
+  border-color: #F14A00;
+  box-shadow: 0 0 0 2px rgba(241,74,0,0.1);
+}
+
+#app_simulator .input-group input::placeholder {
+  color: #9CA3AF;
+}
+
+#app_simulator .analytics-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+#app_simulator .analytics-title {
+  color: #374151;
+  font-weight: 500;
+  margin: 0;
+}
+
+#app_simulator .analytics-select {
+  padding: 0.625rem;
+  border: 1px solid #E5E7EB;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  color: black;
+  background-color: white;
+  transition: all 0.2s;
+}
+
+#app_simulator .analytics-select:focus {
+  outline: none;
+  border-color: #F14A00;
+  box-shadow: 0 0 0 2px rgba(241,74,0,0.1);
+}
+#app_simulator .analytics-select option {
+  padding: 0.5rem;
+}
+
+
+#app_simulator .company-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+#app_simulator .company-title {
+  color: #374151;
+  font-weight: 500;
+  margin: 0;
+}
+
+#app_simulator .company-select {
+  padding: 0.625rem;
+  border: 1px solid #E5E7EB;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  color: black;
+  background-color: white;
+  transition: all 0.2s;
+}
+
+#app_simulator .company-select:focus {
+  outline: none;
+  border-color: #F14A00;
+  box-shadow: 0 0 0 2px rgba(241,74,0,0.1);
+}
+#app_simulator .company-select option {
+  padding: 0.5rem;
+}
+
+
+#app_simulator .country-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+#app_simulator .country-title {
+  color: #374151;
+  font-weight: 500;
+  margin: 0;
+}
+
+#app_simulator .country-select {
+  padding: 0.625rem;
+  border: 1px solid #E5E7EB;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  color: black;
+  background-color: white;
+  transition: all 0.2s;
+}
+
+#app_simulator .country-select:focus {
+  outline: none;
+  border-color: #F14A00;
+  box-shadow: 0 0 0 2px rgba(241,74,0,0.1);
+}
+#app_simulator .country-select option {
+  padding: 0.5rem;
 }

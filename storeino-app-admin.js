@@ -6558,7 +6558,7 @@ window.StoreinoApp.$store = {
 
   // Get App Config
   let response = await window.StoreinoApp.$store.get("apps", {
-      route: "currencyconverter",
+      route: "simulator",
   });
   console.log("respo data",response);
   window.__DATA__ =response.config;
@@ -6606,7 +6606,7 @@ window.StoreinoApp.$store = {
   //  Create Submit Button
   let submitButton = document.createElement("button");
   submitButton.classList.add("submit-button");
-  submitButton.innerText = "Submit";
+  submitButton.innerText = "Confirm";
 
   // Append sumbitButton To SubmitBar
   submitBar.appendChild(submitButton);
@@ -6620,18 +6620,18 @@ window.StoreinoApp.$store = {
     position: fixed;
     bottom: 0;
     display: flex;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Softer, elevated shadow */
+  
     justify-content: flex-end;
     padding: 10px 15px; /* More balanced padding */
     box-sizing: border-box;
     left: 15px;
     right: 15px;
     border-radius: 8px 8px 0 0; /* Slightly larger rounding for a modern look */
-    border-top: 4px solid #3d4756; /* More defined border */
+    border-top: 4px solid #734e94; /* More defined border */
   }
 
   button.submit-button {
-    background-color: #3d4756;
+    background-color: #734e94;
     margin: 0;
     outline: none;
     border: 0;
@@ -6660,7 +6660,6 @@ document.head.appendChild(submitBarStyle);
   // Add Click Event To Button
   submitButton.addEventListener("click", async () => {
       try {
-        
         const data = typeof window.__DATA__ === 'string' ? JSON.parse(window.__DATA__) : window.__DATA__;
         console.log("this data will submitt",data)
       await http.post(`/api/apps/update?route=${response.route}`, {

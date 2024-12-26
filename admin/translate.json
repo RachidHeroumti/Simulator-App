@@ -1,20 +1,53 @@
 {
   "EN": {
-    "appName": "Currency Converter",
-    "select_all": "Select All Currencies",
-    "selected_currency": "Selected Currencies",
-    "auto_select": "Auto Currency Switch"
+    "appName": "Simulator",
+    "buyCost": "Buy Cost",
+    "adsCost": "Ads Cost",
+    "order": "Order (Number of leads)",
+    "delivered": "Delivered (Number of leads)",
+    "salePrice": "Sale Price",
+    "details": "Details",
+    "adsCostPerLead": "Ads Cost per lead",
+    "totalConfirmationCost": "Total Confirmation Cost",
+    "totalStorageCost": "Total Storage Cost",
+    "totalDeliveryCost": "Total Delivery Cost",
+    "costPerLead": "Cost Per Lead",
+    "profit": "Profit",
+    "deliverySettings": "Delivery Settings",
+    "shippingCompany": "Shipping Company"
   },
   "FR": {
-    "appName": "Convertisseur de devises",
-    "select_all": "Sélectionner toutes les devises",
-    "selected_currency": "Devises sélectionnées",
-    "auto_select": "Changement automatique de devise"
+    "appName": "Simulateur",
+    "buyCost": "Coût d'achat",
+    "adsCost": "Coût des publicités",
+    "order": "Commande (Nombre de prospects)",
+    "delivered": "Livré (Nombre de prospects)",
+    "salePrice": "Prix de vente",
+    "details": "Détails",
+    "adsCostPerLead": "Coût par prospect publicitaire",
+    "totalConfirmationCost": "Coût total de confirmation",
+    "totalStorageCost": "Coût total de stockage",
+    "totalDeliveryCost": "Coût total de livraison",
+    "costPerLead": "Coût par prospect",
+    "profit": "Profit",
+    "deliverySettings": "Paramètres de livraison",
+    "shippingCompany": "Entreprise de livraison"
   },
   "AR": {
-    "appName": "محول العملات",
-    "select_all": "تحديد كل العملات",
-    "selected_currency": "العملات المحددة",
-    "auto_select": "تبديل العملة تلقائيًا"
+    "appName": "المحاكي",
+    "buyCost": "تكلفة الشراء",
+    "adsCost": "تكلفة الإعلانات",
+    "order": "الطلب (عدد العملاء المحتملين)",
+    "delivered": "تم التسليم (عدد العملاء المحتملين)",
+    "salePrice": "سعر البيع",
+    "details": "التفاصيل",
+    "adsCostPerLead": "تكلفة الإعلان لكل عميل محتمل",
+    "totalConfirmationCost": "إجمالي تكلفة التأكيد",
+    "totalStorageCost": "إجمالي تكلفة التخزين",
+    "totalDeliveryCost": "إجمالي تكلفة التوصيل",
+    "costPerLead": "التكلفة لكل عميل محتمل",
+    "profit": "الربح",
+    "deliverySettings": "إعدادات التوصيل",
+    "shippingCompany": "شركة الشحن"
   }
 }
