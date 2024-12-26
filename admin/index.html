@@ -9,14 +9,14 @@
 
   <div
     style="background-color: #fff; color: black"
-    class="h-screen"
+    class="mb-16"
     id="app_simulator"
     v-if="data"
   >
     <template>
       <div class="w-full text-xl" v-if="data">
         <h1
-          style="background-color: #734e94"
+          style="background-color: #4a78cf"
           class="w-full text-center p-3 text-white"
         >
           {{'appName'|t}}
@@ -31,10 +31,10 @@
               <div
                 class="w-full"
                 :style="{
-                  backgroundColor: activeTab === tab.name ? '#734e94' : '',
-                  border: '2px solid #734e94'
+                  backgroundColor: activeTab === tab.name ? '#4a78cf' : '',
+                  border: '2px solid #4a78cf'
                 }"
-                style="border: 2px solid #734e94"
+                style="border: 2px solid #4a78cf"
                 :class="[
           'py-2 px-4 text-sm font-medium rounded-t-lg transition-all',
           activeTab === tab.name
@@ -162,6 +162,7 @@
                           class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
                         />
                       </div>
+                      
                     </div>
 
                     <div class="w-full mt-4 text-gray-700">
@@ -226,6 +227,20 @@
                         </div>
                       </div>
                     </div>
+
+                    <!-- Profit Section -->
+                    <div
+               
+                      class="profit flex justify-center items-center gap-2 space-x-2 p-2 mt-4 "
+                    >
+                      <span class="font-medium">Profit</span>
+                      <span class="text-lg font-semibold"
+                      :class="{
+                        'text-green-600 ': profits >= 0,
+                        'text-red-600 ': profits < 0
+                      }"
+                      > {{ profits }} </span>
+                    </div>
                   </div>
 
                   <div class="flex flex-col md:px-5 w-1/4">
@@ -282,29 +297,14 @@
               </div> -->
                     </div>
 
-                    <!-- Profit Section -->
-                    <div
-                      :class="{
-                         'bg-green-600 text-white': profits >= 0,
-                         'bg-red-600 text-white': profits < 0
-                       }"
-                      style="border: 2px solid"
-                      class="profit flex justify-center items-center gap-2 space-x-2 p-2 mt-4 rounded-lg"
-                    >
-                      <span class="font-medium">Profit</span>
-                      <span class="text-lg font-semibold"> {{ profits }} </span>
-                    </div>
+                    
                   </div>
                 </div>
 
-                <div class="w-full flex justify-center">
+                <div class="w-full flex justify-end">
                   <button
                     class="p-2 rounded-lg"
-                    style="
-                      border: 2px solid #734e94;
-                      color: #734e94;
-                      max-width: 160px;
-                    "
+                    style="border: 2px solid #4a78cf; color: #4a78cf"
                     @click="toSaveData=true"
                   >
                     Add to Analytics
@@ -323,8 +323,11 @@
                       class="text-xl font-bold mb-4 text-gray-800 w-full flex justify-between items-center"
                     >
                       <span> save in Analytics</span>
-                      <span class=" shadow-md " v-html="svg('cancel')" 
-                      @click="toSaveData=false"></span>
+                      <span
+                        class="shadow-md"
+                        v-html="svg('cancel')"
+                        @click="toSaveData=false"
+                      ></span>
                     </h1>
                     <div class="mb-6">
                       <label
@@ -369,9 +372,39 @@
               </div>
               <div
                 v-show="tab.name === 'analytics'"
-                class="w-full flex flex-col lg:flex-row justify-center gap-4"
+                class="w-full flex flex-col lg:flex-row justify-center gap-4 relative"
                 style="min-height: 500px"
               >
+                <div
+                  v-if="ShowAiAdvice"
+                  style="z-index: 99999"
+                  class="fixed flex justify-center top-0 left-0 right-0 w-full h-screen bg-black bg-opacity-50 p-10"
+                >
+                  <div
+                    style="max-height: 750px;min-width: 750px;"
+                    class="bg-white max-w-lg overflow-y-auto shadow-md rounded-lg p-6  flex flex-col items-center"
+                  >
+                    <h1 style="color: #fff; background-color: chocolate;" class="text-2xl font-bold  items-center text-gray-800 flex w-full justify-between p-2  ">
+                      
+                      <span> AI Advice</span>
+                      <span
+                        class="shadow-md bg-white"
+                        v-html="svg('cancel')"
+                        @click="ShowAiAdvice=false"
+                      ></span>
+                    </h1>
+
+                    <div v-if="AiAdvices.length === 0" class="w-full h-full flex justify-center items-center">
+                      <div class="loader" aria-label="Loading AI advice..."></div>
+                    </div>
+                  
+                    <p v-else class="text-lg mt-4 text-gray-600 text-center w-full">
+                      {{ AiAdvices }}
+                    </p>
+                  
+                  </div>
+                </div>
+
                 <canvas
                   id="mychart"
                   class=""
@@ -379,7 +412,16 @@
                 ></canvas>
 
                 <!-- Table of Data -->
-                <div class="mt-10 overflow-x-auto w-full">
+                <div class="p-2 overflow-x-auto w-full gap-2">
+                  <div class="w-full flex justify-end p-1">
+                    <button
+                      style="background-color: chocolate; color: white"
+                      class="flex justify-center items-center p-2"
+                      @click="getAiAdvice"
+                    >
+                      Get Ai Advice
+                    </button>
+                  </div>
                   <table
                     class="table-auto border-collapse border border-gray-300 w-full text-left"
                   >
@@ -396,8 +438,13 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr v-for="(monthData, rowIndex) in AnalyticsData" :key="rowIndex">
-                        <td class="border border-gray-300 px-4 py-2">{{ monthData.month }}</td>
+                      <tr
+                        v-for="(monthData, rowIndex) in AnalyticsData"
+                        :key="rowIndex"
+                      >
+                        <td class="border border-gray-300 px-4 py-2">
+                          {{ monthData.month }}
+                        </td>
                         <td
                           v-for="(dataset, colIndex) in monthData.datasets"
                           :key="colIndex"
@@ -409,7 +456,6 @@
                     </tbody>
                   </table>
                 </div>
-                
               </div>
               <div
                 v-if="tab.name === 'settings'"

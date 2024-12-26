@@ -4,32 +4,39 @@ var vm = new StoreinoApp({
   data: {
     data: __DATA__,
     tabs: [
-      { name: "main", title: "Main", content: "Welcome to the Mian Tab" },
+      {
+        name: "main",
+        title: "Calculation",
+        content: "Welcome to the Mian Tab",
+      },
       {
         name: "analytics",
         title: "Analytics",
         content: "Welcome to Analytics Tab",
       },
-      {
-        name: "settings",
-        title: "Settings",
-        content: "Adjust your Settings here",
-      },
+      // {
+      //   name: "settings",
+      //   title: "Settings",
+      //   content: "Adjust your Settings here",
+      // },
     ],
     activeTab: "main",
     ShowDetails: false,
     toSaveData: false,
+    ShowAiAdvice: false,
     selectedMonth: "",
+    AiAdvices:'',
     buyPrice: 0,
     adscost: 0,
     ordersLeadNumber: 0,
-    ordersNumber: "-------",
+    ordersNumber: "--------------",
     ConfirmedLeadNumber: 0,
     DeliverdLeadNumber: 0,
     confirmationcost: 0,
     stockagecost: 0,
-
-    deliverycost: 0,
+      AiendPoint:"https://api.openai.com/v1/chat/completions",
+      AiToken:'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',
+    deliverycost: 0, 
     LeadPrice: 0,
     SalePrice: 0,
     profits: 0,
@@ -89,9 +96,9 @@ var vm = new StoreinoApp({
       "December",
     ];
     this.selectedMonth = monthNames[currnTDate.getMonth()];
-    console.log("🚀 ~ mounted ~  this.data:",  this.data)
-    this.AnalyticsData=this.data.AnalyticsData;
-    console.log("🚀 ~ mounted ~  this.AnalyticsData:",  this.AnalyticsData)
+    console.log("🚀 ~ mounted ~  this.data:", this.data);
+    this.AnalyticsData = this.data.AnalyticsData;
+    console.log("🚀 ~ mounted ~  this.AnalyticsData:", this.AnalyticsData);
   },
   watch: {
     buyPrice(val) {
@@ -141,7 +148,7 @@ var vm = new StoreinoApp({
         Revenue: { backgroundColor: "#4bc0c0", borderColor: "#4bc0c0" },
         Sales: { backgroundColor: "#f87979", borderColor: "#f87979" },
       };
-    
+
       const currentMonthData = {
         month: this.selectedMonth,
         datasets: Object.entries(datasetConfig).map(([key, config]) => ({
@@ -150,15 +157,15 @@ var vm = new StoreinoApp({
           value: this[key.toLowerCase()] || 0,
         })),
       };
-    
+
       if (!this.AnalyticsData || !Array.isArray(this.AnalyticsData)) {
         this.AnalyticsData = [];
       }
-    
+
       const existingIndex = this.AnalyticsData.findIndex(
         (data) => data.month === this.selectedMonth
       );
-    
+
       if (existingIndex !== -1) {
         // Update existing month data
         this.$set(this.AnalyticsData, existingIndex, currentMonthData);
@@ -166,36 +173,34 @@ var vm = new StoreinoApp({
         // Add new month data
         this.AnalyticsData.push(currentMonthData);
       }
-    
+
       // Update data.AnalyticsData with the latest AnalyticsData
       this.$set(this.data, "AnalyticsData", [...this.AnalyticsData]);
-    
+
       console.log("Updated AnalyticsData:", this.AnalyticsData);
       this.toSaveData = false;
     },
     renderChart() {
       const canvas = document.getElementById("mychart");
-      console.log("🚀 ~ renderChart ~ canvas:", canvas);
       if (canvas) {
         const ctx = canvas.getContext("2d");
-        console.log("🚀 ~ renderChart ~ ctx:", ctx);
-    
-        // Prepare data for Chart.js
-        const labels = this.AnalyticsData.map((item) => item.month); // X-axis labels
-        const datasets = this.AnalyticsData[0]?.datasets.map((datasetConfig, index) => ({
-          label: datasetConfig.label,
-          backgroundColor: datasetConfig.backgroundColor,
-          borderColor: datasetConfig.borderColor,
-          borderWidth: 1,
-          data: this.AnalyticsData.map((item) => item.datasets[index].value), // Y-axis data for each dataset
-        }));
-    
-        // Create the chart
+
+        const labels = this.AnalyticsData.map((item) => item.month);
+        const datasets = this.AnalyticsData[0]?.datasets.map(
+          (datasetConfig, index) => ({
+            label: datasetConfig.label,
+            backgroundColor: datasetConfig.backgroundColor,
+            borderColor: datasetConfig.borderColor,
+            borderWidth: 1,
+            data: this.AnalyticsData.map((item) => item.datasets[index].value),
+          })
+        );
+
         new Chart(ctx, {
-          type: "bar", // Choose chart type
+          type: "bar",
           data: {
-            labels, // Months (X-axis)
-            datasets, // Dynamic datasets based on AnalyticsData
+            labels,
+            datasets,
           },
           options: {
             responsive: true,
@@ -235,7 +240,6 @@ var vm = new StoreinoApp({
       const adscost = parseFloat(this.adscost ?? 0);
 
       const Geted = SalePrice * deleivredLeadNumber;
-      console.log("🚀 ~ calculateProfits ~ Geted:", Geted);
 
       const lost =
         deliverycost * deleivredLeadNumber +
@@ -246,7 +250,8 @@ var vm = new StoreinoApp({
       this.expenses = lost;
       this.revenue = Geted;
       this.sales = deleivredLeadNumber;
-      console.log("🚀 ~ calculateProfits ~ lost:", lost);
+      // console.log("🚀 ~ calculateProfits ~ Geted:", Geted);
+      // console.log("🚀 ~ calculateProfits ~ lost:", lost);
       this.profits = Geted - lost;
 
       // Call `calculateTotalsCosts` directly using `this` properties
@@ -270,6 +275,50 @@ var vm = new StoreinoApp({
       this.storageTotalCost = stockagecost * ordersLeadNumber || 0;
       this.deliveryTotalCost = deliverycost * deleivredLeadNumber || 0;
     },
+    async getAiAdvice() {
+      this.ShowAiAdvice=true ;
+      if (!this.AnalyticsData || this.AnalyticsData.length === 0) {
+        console.error("Analytics data is empty or not available.");
+        return;
+      }
+      const analyticsSummary = this.AnalyticsData
+        .map((data, index) => `Data ${index + 1}: ${JSON.stringify(data)}`)
+        .join("\n");
+
+      const prompt = `
+        Based on the following sales analytics data, provide actionable advice for improving sales in the e-commerce context
+        provide a 250 words answer and dont use markdown for text formatting.
+        ${analyticsSummary}
+      `;
+    
+      try {
+        const response = await axios.post(
+          'https://api.openai.com/v1/chat/completions',
+          {
+            model: 'gpt-4',
+            messages: [
+              { role: 'system', content: 'You are an expert sales advisor.' },
+              { role: 'user', content: prompt },
+            ],
+            max_tokens: 200,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${this.AiToken}`,
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+
+        const advice = response.data.choices[0].message.content.trim();
+          this.AiAdvices=advice;
+          
+          console.log("AI Advice:", advice);
+      } catch (error) {
+        console.error("Error fetching AI advice:", error.response?.data || error.message);
+      }
+    }
+    ,
     svg(name) {
       const icons = {
         edit: '<svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#5f6368"><path d="M80 0v-160h800V0H80Zm160-320h56l312-311-29-29-28-28-311 312v56Zm-80 80v-170l448-447q11-11 25.5-17t30.5-6q16 0 31 6t27 18l55 56q12 11 17.5 26t5.5 31q0 15-5.5 29.5T777-687L330-240H160Zm560-504-56-56 56 56ZM608-631l-29-29-28-28 57 57Z"/></svg>',
