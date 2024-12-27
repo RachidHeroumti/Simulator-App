@@ -6627,11 +6627,11 @@ window.StoreinoApp.$store = {
     left: 15px;
     right: 15px;
     border-radius: 8px 8px 0 0; /* Slightly larger rounding for a modern look */
-    border-top: 4px solid #734e94; /* More defined border */
+    border-top: 4px solid #4a78cf; /* More defined border */
   }
 
   button.submit-button {
-    background-color: #734e94;
+    background-color: #4a78cf;
     margin: 0;
     outline: none;
     border: 0;
@@ -6646,7 +6646,7 @@ window.StoreinoApp.$store = {
   }
 
   button.submit-button:hover {
-    background-color: #6f6984;
+    background-color: #4a78cf;
     transform: translateY(-2px); /* Subtle lift effect on hover */
   }
 

@@ -32,6 +32,8 @@ var vm = new StoreinoApp({
     ordersNumber: "--------------",
     ConfirmedRate: 0,
     DeliverdRate: 0,
+    ConfirmationValue: 0,
+    DeliveryValue: 0,
     confirmationcost: 0,
     stockagecost: 0,
     AiendPoint: "https://api.openai.com/v1/chat/completions",
@@ -40,6 +42,9 @@ var vm = new StoreinoApp({
     deliverycost: 0,
     fixedCost: 0,
     SalePrice: 0,
+    investment: 0,
+    profitInProduct: 0,
+    Rio: 0,
     profits: 0,
     realAdsCost: 0,
     LeadCostAds: 0,
@@ -133,6 +138,12 @@ var vm = new StoreinoApp({
     SalePrice(val) {
       this.calculateProfits();
     },
+    fixedCost(val) {
+      this.calculateProfits();
+    },
+    investment(val) {
+      this.calculateProfits();
+    },
     activeTab(val) {
       console.log("🚀 ~ activeTab ~ val:", val);
       if (val === "analytics") {
@@ -143,6 +154,101 @@ var vm = new StoreinoApp({
     },
   },
   methods: {
+    selectTab(tabName) {
+      this.activeTab = tabName;
+    },
+    convertRateToValue(rate, mainValue) {
+      const result = (rate / 100) * mainValue;
+      return Math.round(result * 100) / 100;
+    },
+    calculateProfits() {
+      const SalePrice = parseFloat(this.SalePrice ?? 0);
+      const ordersLeadNumber = parseFloat(this.ordersLeadNumber ?? 0);
+      const confirmationcost = parseFloat(this.confirmationcost ?? 0);
+      const stockagecost = parseFloat(this.stockagecost ?? 0);
+      const deliverycost = parseFloat(this.deliverycost ?? 0);
+      const buyPrice = parseFloat(this.buyPrice ?? 0);
+      const deliveredRate = parseFloat(this.DeliverdRate ?? 0);
+      const ConfirmedRate = parseFloat(this.ConfirmedRate ?? 0);
+      const adscost = parseFloat(this.adscost ?? 0);
+      const FixedCost = parseFloat(this.fixedCost ?? 0);
+      this.ConfirmationValue = this.convertRateToValue(
+        ConfirmedRate,
+        ordersLeadNumber
+      );
+      console.log(
+        "🚀 ~ calculateProfits ~ ConfirmationValue:",
+        this.ConfirmationValue
+      );
+      this.DeliveryValue = this.convertRateToValue(
+        this.DeliverdRate,
+        this.ConfirmationValue
+      );
+      console.log("🚀 ~ calculateProfits ~ DeliveryValue:", this.DeliveryValue);
+
+      const Geted = SalePrice * this.DeliveryValue;
+      const lost =
+        FixedCost +
+        deliverycost * this.DeliveryValue +
+        adscost +
+        confirmationcost * this.DeliveryValue +
+        stockagecost * this.DeliveryValue +
+        this.DeliveryValue * buyPrice;
+
+      this.expenses = lost;
+      this.revenue = Geted;
+      this.sales = this.DeliveryValue;
+      this.profits = Math.round((Geted - lost) * 100) / 100;
+
+      this.calculateTotalsCosts();
+    },
+    calculateTotalsCosts() {
+      const SalePrice = parseFloat(this.SalePrice ?? 0);
+      const adscost = parseFloat(this.adscost ?? 0);
+      const ConfirmedNamber = parseFloat(this.ConfirmationValue ?? 0);
+      const ordersLeadNumber = parseFloat(this.ordersLeadNumber ?? 0);
+      const deleivredNumber = parseFloat(this.DeliveryValue ?? 0);
+      const confirmationcost = parseFloat(this.confirmationcost ?? 0);
+      const stockagecost = parseFloat(this.stockagecost ?? 0);
+      const deliverycost = parseFloat(this.deliverycost ?? 0);
+      const buyPrice = parseFloat(this.buyPrice ?? 0);
+
+      this.realAdsCost =
+        deleivredNumber !== 0 ? (adscost / deleivredNumber).toFixed(2) : "0.00";
+      this.LeadCostAds =
+        ordersLeadNumber !== 0
+          ? (adscost / ordersLeadNumber).toFixed(2)
+          : "0.00";
+      this.confirmationLeadCostAds =
+        ConfirmedNamber !== 0 ? (adscost / ConfirmedNamber).toFixed(2) : "0.00";
+
+      this.investment =
+        Math.round(
+          (Number(this.realAdsCost) + Number(buyPrice) + Number(deliverycost) +Number(confirmationcost) +Number(stockagecost)) *100 
+        ) / 100;
+      this.profitInProduct =
+        Math.round((Number(SalePrice) - Number(this.investment)) * 100) / 100;
+
+      this.Rio =
+        this.profitInProduct !== 0
+          ? (
+              ((Number(this.profitInProduct) - Number(this.investment)) / Number(this.investment)) *
+              100
+            ).toFixed(2) + "%"
+          : "0.00%";
+
+      //this.confirmationTotalCost = confirmationcost * ordersLeadNumber || 0;
+      //  this.storageTotalCost = stockagecost * ordersLeadNumber || 0;
+      //this.deliveryTotalCost = deliverycost * deliveredRate || 0;
+    },
+    updatePriceValue(value) {
+      this.ConfirmedRate = value;
+      console.log("🚀 ~ updatePriceValue ~ value:", value);
+    },
+    updateDeliveryRate(value) {
+      this.DeliverdRate = value;
+      console.log("🚀 ~ updatePriceValue ~ value:", value);
+    },
     saveDataAnalytics() {
       const datasetConfig = {
         Profits: { backgroundColor: "#19e557", borderColor: "#19e557" },
@@ -227,63 +333,6 @@ var vm = new StoreinoApp({
         console.error("Canvas element not found.");
       }
     },
-    selectTab(tabName) {
-      this.activeTab = tabName;
-    },
-    calculateProfits() {
-      const SalePrice = parseFloat(this.SalePrice ?? 0);
-      const ordersLeadNumber = parseFloat(this.ordersLeadNumber ?? 0);
-      const confirmationcost = parseFloat(this.confirmationcost ?? 0);
-      const stockagecost = parseFloat(this.stockagecost ?? 0);
-      const deliverycost = parseFloat(this.deliverycost ?? 0);
-      const buyPrice = parseFloat(this.buyPrice ?? 0);
-      const deleivredLeadNumber = parseFloat(this.DeliverdRate ?? 0);
-      const ConfirmedRate = parseFloat(this.ConfirmedRate ?? 0);
-      const adscost = parseFloat(this.adscost ?? 0);
-
-      const Geted = SalePrice * deleivredLeadNumber;
-
-      const lost =
-        deliverycost * deleivredLeadNumber +
-        adscost +
-        confirmationcost * ordersLeadNumber +
-        stockagecost * ordersLeadNumber +
-        deleivredLeadNumber * buyPrice;
-      this.expenses = lost;
-      this.revenue = Geted;
-      this.sales = deleivredLeadNumber;
-      // console.log("🚀 ~ calculateProfits ~ Geted:", Geted);
-      // console.log("🚀 ~ calculateProfits ~ lost:", lost);
-      this.profits = Geted - lost;
-
-      //this.calculateTotalsCosts();
-    },
-    calculateTotalsCosts() {
-      const adscost = parseFloat(this.adscost ?? 0);
-      const ConfirmedRate = parseFloat(this.ConfirmedRate ?? 0);
-      const ordersLeadNumber = parseFloat(this.ordersLeadNumber ?? 0);
-      const deleivredLeadNumber = parseFloat(this.DeliverdRate ?? 0);
-      const confirmationcost = parseFloat(this.confirmationcost ?? 0);
-      const stockagecost = parseFloat(this.stockagecost ?? 0);
-      const deliverycost = parseFloat(this.deliverycost ?? 0);
-
-      // Avoid division by zero
-      this.realAdsCost =
-        deleivredLeadNumber !== 0 ? adscost / deleivredLeadNumber : 0;
-
-      //this.confirmationTotalCost = confirmationcost * ordersLeadNumber || 0;
-
-      //  this.storageTotalCost = stockagecost * ordersLeadNumber || 0;
-      //this.deliveryTotalCost = deliverycost * deleivredLeadNumber || 0;
-    },
-    updatePriceValue(value) {
-      this.ConfirmedRate = value;
-      console.log("🚀 ~ updatePriceValue ~ value:", value);
-    },
-    updateDeliveryRate(value) {
-      this.DeliverdRate = value;
-      console.log("🚀 ~ updatePriceValue ~ value:", value);
-    },
     async getAiAdvice() {
       this.ShowAiAdvice = true;
       if (!this.AnalyticsData || this.AnalyticsData.length === 0) {
@@ -296,7 +345,7 @@ var vm = new StoreinoApp({
 
       const prompt = `
         Based on the following sales analytics data, provide actionable advice for improving sales in the e-commerce context
-        provide a 250 words answer and dont use markdown for text formatting.
+        provide a 50 words answer and dont use markdown for text formatting.
         ${analyticsSummary}
       `;
 
