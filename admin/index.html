@@ -62,7 +62,7 @@
                         <label
                           class="flex items-center p-1 space-x-2 text-sm font-medium text-gray-700 gap-2"
                         >
-                          <span>Buy Cost</span>
+                          <span>Buy Price (product) </span>
                           <span v-html="svg('buy')"></span>
                         </label>
                         <input
@@ -109,49 +109,6 @@
                         <label
                           class="flex items-center p-1 space-x-2 text-sm font-medium text-gray-700 gap-2"
                         >
-                          <span> Order's (Number )</span>
-                          <span v-html="svg('ordered')"></span>
-                        </label>
-                        <input
-                          v-model="ordersNumber"
-                          type="text"
-                          placeholder="How many orders"
-                          class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
-                        />
-                      </div>
-                      <div>
-                        <label
-                          class="flex items-center p-1 space-x-2 text-sm font-medium text-gray-700 gap-2"
-                        >
-                          <span>Confirmation (Number of leads)</span>
-                          <span v-html="svg('confirmed')"></span>
-                        </label>
-                        <input
-                          v-model="ConfirmedLeadNumber"
-                          type="text"
-                          placeholder="How many orders confirmed"
-                          class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
-                        />
-                      </div>
-                      <div>
-                        <label
-                          class="flex items-center p-1 space-x-2 text-sm font-medium text-gray-700 gap-2"
-                        >
-                          <span>Delivered (Number of leads)</span>
-                          <span v-html="svg('deleivred')"></span>
-                        </label>
-                        <input
-                          v-model="DeliverdLeadNumber"
-                          type="text"
-                          placeholder="Enter Sale Price"
-                          class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
-                        />
-                      </div>
-
-                      <div>
-                        <label
-                          class="flex items-center p-1 space-x-2 text-sm font-medium text-gray-700 gap-2"
-                        >
                           <span>Sale Price</span>
                           <span v-html="svg('sell')"></span>
                         </label>
@@ -162,7 +119,83 @@
                           class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
                         />
                       </div>
-                      
+
+                      <div>
+                        <label
+                          class="flex items-center p-1 space-x-2 text-sm font-medium text-gray-700 gap-2"
+                        >
+                          <span>Confirmation </span>
+                          <span v-html="svg('confirmed')"></span>
+                        </label>
+                        <div
+                          class="flex  items-center w-full max-w-md gap-2"
+                        >
+                          <input
+                            type="range"
+                            id="price"
+                            name="price"
+                            min="0"
+                            max="100"
+                            step="10"
+                            :value="ConfirmedRate"
+                            class="w-full h-2 bg-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            @input="updatePriceValue($event.target.value)"
+                          />
+                          <div
+                            class="p-1 flex items-center space-x-1 text-center text-lg border border-gray-300 rounded-lg bg-gray-50 focus:outline-none"
+                          >
+                            <input
+                              type="text"
+                              id="priceInput"
+                              :value="ConfirmedRate"
+                              readonly
+                              class="bg-transparent w-10 outline-none text-center"
+                            />
+                            <span class="text-lg font-medium text-gray-700"
+                              >%</span
+                            >
+                          </div>
+                        </div>
+                      </div>
+
+
+                      <div>
+                        <label
+                          class="flex items-center p-1 space-x-2 text-sm font-medium text-gray-700 gap-2"
+                        >
+                          <span>Delivered </span>
+                          <span v-html="svg('deleivred')"></span>
+                        </label>
+                        <div
+                          class="flex  items-center w-full max-w-md gap-2"
+                        >
+                          <input
+                            type="range"
+                            id="price"
+                            name="price"
+                            min="0"
+                            max="100"
+                            step="10"
+                            :value="DeliverdRate"
+                            class="w-full h-2 bg-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            @input="updateDeliveryRate($event.target.value)"
+                          />
+                          <div
+                            class="p-1 flex items-center space-x-1 text-center text-lg border border-gray-300 rounded-lg bg-gray-50 focus:outline-none"
+                          >
+                            <input
+                              type="text"
+                              id="priceInput"
+                              :value="DeliverdRate"
+                              readonly
+                              class="bg-transparent w-10 outline-none text-center"
+                            />
+                            <span class="text-lg font-medium text-gray-700"
+                              >%</span
+                            >
+                          </div>
+                        </div>
+                      </div>
                     </div>
 
                     <div class="w-full mt-4 text-gray-700">
@@ -177,69 +210,101 @@
                         ></span>
                       </h1>
                       <div v-if="ShowDetails" class="gap-2 flex flex-wrap">
-                        <div>
-                          <label class="block text-sm font-medium">
-                            Ads Cost per lead
-                          </label>
-                          <input
-                            v-model="realAdsCost"
-                            type="text"
-                            disabled
-                            placeholder="Enter Real Ads Cost"
-                            class="mt-1 w-full py-2 bg-white"
-                          />
+                        <div class="flex flex-col">
+                          <div>
+                            <label class="block text-sm font-medium">
+                              Ads Cost per Lead
+                            </label>
+                            <input
+                              v-model="LeadCostAds"
+                              type="text"
+                              disabled
+                              placeholder="Real Ads Cost "
+                              class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
+                            />
+                          </div>
+                          <div>
+                            <label class="block text-sm font-medium">
+                              Ads Cost per Confirmation
+                            </label>
+                            <input
+                              v-model="confirmationLeadCostAds"
+                              type="text"
+                              disabled
+                              placeholder="Enter Confirmation Cost"
+                              class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
+                            />
+                          </div>
+                          <div>
+                            <label class="block text-sm font-medium">
+                              Ads Cost per Delivery
+                            </label>
+                            <input
+                              v-model="realAdsCost"
+                              type="text"
+                              disabled
+                              placeholder="Enter Confirmation Cost"
+                              class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
+                            />
+                          </div>
                         </div>
-                        <div>
-                          <label class="block text-sm font-medium">
-                            Total Confirmation Cost
-                          </label>
-                          <input
-                            v-model="confirmationTotalCost"
-                            type="text"
-                            disabled
-                            placeholder="Enter Confirmation Cost"
-                            class="mt-1 w-full py-2 bg-white"
-                          />
-                        </div>
-                        <div>
-                          <label class="block text-sm font-medium">
-                            Total Storage Cost
-                          </label>
-                          <input
-                            v-model="storageTotalCost"
-                            type="text"
-                            disabled
-                            placeholder="Enter Storage Cost"
-                            class="mt-1 w-full py-2 bg-white"
-                          />
-                        </div>
-                        <div>
-                          <label class="block text-sm font-medium">
-                            Total Delivery Cost
-                          </label>
-                          <input
-                            v-model="deliveryTotalCost"
-                            type="text"
-                            disabled
-                            placeholder="Enter Delivery Cost"
-                            class="mt-1 w-full bg-white"
-                          />
+
+                        <div class="flex flex-col">
+                          <div>
+                            <label class="block text-sm font-medium">
+                              Expenses
+                            </label>
+                            <input
+                              v-model="expenses"
+                              type="text"
+                              disabled
+                              placeholder="Enter Storage Cost"
+                              class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
+                            />
+                          </div>
+
+                          <div>
+                            <label class="block text-sm font-medium">
+                              Revenue
+                            </label>
+                            <input
+                              v-model="revenue"
+                              type="text"
+                              disabled
+                              placeholder="Enter Delivery Cost"
+                              class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
+                            />
+                          </div>
+                          <div>
+                            <label class="block text-sm font-medium">
+                              Sales
+                            </label>
+                            <input
+                              v-model="sales"
+                              type="text"
+                              disabled
+                              placeholder="Enter Delivery Cost"
+                              class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
 
                     <!-- Profit Section -->
                     <div
-               
-                      class="profit flex justify-center items-center gap-2 space-x-2 p-2 mt-4 "
+                      class="profit flex justify-center items-center gap-2 space-x-2 p-2 mt-4"
                     >
                       <span class="font-medium">Profit</span>
-                      <span class="text-lg font-semibold"
-                      :class="{
+                      <span
+                        class="text-lg font-semibold"
+                        :class="{
                         'text-green-600 ': profits >= 0,
                         'text-red-600 ': profits < 0
                       }"
-                      > {{ profits }} </span>
+                      >
+                        {{ profits }}
+                      </span>
                     </div>
                   </div>
 
@@ -284,20 +349,18 @@
                         />
                       </div>
 
-                      <!-- <div>
-                <label class="block text-sm font-medium text-gray-700">
-                  Lead
-                </label>
-                <input
-                  v-model="LeadPrice"
-                  type="text"
-                  placeholder="Lead Price"
-                  class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
-                />
-              </div> -->
+                      <div>
+                        <label class="block text-sm font-medium text-gray-700">
+                          Fixed Price
+                        </label>
+                        <input
+                          v-model="fixedCost"
+                          type="text"
+                          placeholder="Lead Price"
+                          class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
+                        />
+                      </div>
                     </div>
-
-                    
                   </div>
                 </div>
 
@@ -381,11 +444,13 @@
                   class="fixed flex justify-center top-0 left-0 right-0 w-full h-screen bg-black bg-opacity-50 p-10"
                 >
                   <div
-                    style="max-height: 750px;min-width: 750px;"
-                    class="bg-white max-w-lg overflow-y-auto shadow-md rounded-lg p-6  flex flex-col items-center"
+                    style="max-height: 750px; min-width: 750px"
+                    class="bg-white max-w-lg overflow-y-auto shadow-md rounded-lg p-6 flex flex-col items-center"
                   >
-                    <h1 style="color: #fff; background-color: chocolate;" class="text-2xl font-bold  items-center text-gray-800 flex w-full justify-between p-2  ">
-                      
+                    <h1
+                      style="color: #fff; background-color: chocolate"
+                      class="text-2xl font-bold items-center text-gray-800 flex w-full justify-between p-2"
+                    >
                       <span> AI Advice</span>
                       <span
                         class="shadow-md bg-white"
@@ -394,14 +459,22 @@
                       ></span>
                     </h1>
 
-                    <div v-if="AiAdvices.length === 0" class="w-full h-full flex justify-center items-center">
-                      <div class="loader" aria-label="Loading AI advice..."></div>
+                    <div
+                      v-if="AiAdvices.length === 0"
+                      class="w-full h-full flex justify-center items-center"
+                    >
+                      <div
+                        class="loader"
+                        aria-label="Loading AI advice..."
+                      ></div>
                     </div>
-                  
-                    <p v-else class="text-lg mt-4 text-gray-600 text-center w-full">
+
+                    <p
+                      v-else
+                      class="text-lg mt-4 text-gray-600 text-center w-full"
+                    >
                       {{ AiAdvices }}
                     </p>
-                  
                   </div>
                 </div>
 

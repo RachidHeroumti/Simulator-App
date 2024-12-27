@@ -21,27 +21,29 @@ var vm = new StoreinoApp({
       // },
     ],
     activeTab: "main",
-    ShowDetails: false,
+    ShowDetails: true,
     toSaveData: false,
     ShowAiAdvice: false,
     selectedMonth: "",
-    AiAdvices:'',
+    AiAdvices: "",
     buyPrice: 0,
     adscost: 0,
     ordersLeadNumber: 0,
     ordersNumber: "--------------",
-    ConfirmedLeadNumber: 0,
-    DeliverdLeadNumber: 0,
+    ConfirmedRate: 0,
+    DeliverdRate: 0,
     confirmationcost: 0,
     stockagecost: 0,
-      AiendPoint:"https://api.openai.com/v1/chat/completions",
-      AiToken:'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',
-    deliverycost: 0, 
-    LeadPrice: 0,
+    AiendPoint: "https://api.openai.com/v1/chat/completions",
+    AiToken:
+      "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",
+    deliverycost: 0,
+    fixedCost: 0,
     SalePrice: 0,
     profits: 0,
     realAdsCost: 0,
-    confirmationTotalCost: 0,
+    LeadCostAds: 0,
+    confirmationLeadCostAds: 0,
     storageTotalCost: 0,
     deliveryTotalCost: 0,
     AnalyticsData: {},
@@ -110,7 +112,7 @@ var vm = new StoreinoApp({
     ordersLeadNumber(val) {
       this.calculateProfits();
     },
-    ConfirmedLeadNumber(val) {
+    ConfirmedRate(val) {
       this.calculateProfits();
     },
     confirmationcost(val) {
@@ -125,7 +127,7 @@ var vm = new StoreinoApp({
     LeadPrice(val) {
       this.calculateProfits();
     },
-    DeliverdLeadNumber(val) {
+    DeliverdRate(val) {
       this.calculateProfits();
     },
     SalePrice(val) {
@@ -235,8 +237,8 @@ var vm = new StoreinoApp({
       const stockagecost = parseFloat(this.stockagecost ?? 0);
       const deliverycost = parseFloat(this.deliverycost ?? 0);
       const buyPrice = parseFloat(this.buyPrice ?? 0);
-      const deleivredLeadNumber = parseFloat(this.DeliverdLeadNumber ?? 0);
-      const ConfirmedLeadNumber = parseFloat(this.ConfirmedLeadNumber ?? 0);
+      const deleivredLeadNumber = parseFloat(this.DeliverdRate ?? 0);
+      const ConfirmedRate = parseFloat(this.ConfirmedRate ?? 0);
       const adscost = parseFloat(this.adscost ?? 0);
 
       const Geted = SalePrice * deleivredLeadNumber;
@@ -254,14 +256,13 @@ var vm = new StoreinoApp({
       // console.log("🚀 ~ calculateProfits ~ lost:", lost);
       this.profits = Geted - lost;
 
-      // Call `calculateTotalsCosts` directly using `this` properties
-      this.calculateTotalsCosts();
+      //this.calculateTotalsCosts();
     },
     calculateTotalsCosts() {
       const adscost = parseFloat(this.adscost ?? 0);
-      const ConfirmedLeadNumber = parseFloat(this.ConfirmedLeadNumber ?? 0);
+      const ConfirmedRate = parseFloat(this.ConfirmedRate ?? 0);
       const ordersLeadNumber = parseFloat(this.ordersLeadNumber ?? 0);
-      const deleivredLeadNumber = parseFloat(this.DeliverdLeadNumber ?? 0);
+      const deleivredLeadNumber = parseFloat(this.DeliverdRate ?? 0);
       const confirmationcost = parseFloat(this.confirmationcost ?? 0);
       const stockagecost = parseFloat(this.stockagecost ?? 0);
       const deliverycost = parseFloat(this.deliverycost ?? 0);
@@ -270,55 +271,65 @@ var vm = new StoreinoApp({
       this.realAdsCost =
         deleivredLeadNumber !== 0 ? adscost / deleivredLeadNumber : 0;
 
-      this.confirmationTotalCost = confirmationcost * ordersLeadNumber || 0;
+      //this.confirmationTotalCost = confirmationcost * ordersLeadNumber || 0;
 
-      this.storageTotalCost = stockagecost * ordersLeadNumber || 0;
-      this.deliveryTotalCost = deliverycost * deleivredLeadNumber || 0;
+      //  this.storageTotalCost = stockagecost * ordersLeadNumber || 0;
+      //this.deliveryTotalCost = deliverycost * deleivredLeadNumber || 0;
+    },
+    updatePriceValue(value) {
+      this.ConfirmedRate = value;
+      console.log("🚀 ~ updatePriceValue ~ value:", value);
+    },
+    updateDeliveryRate(value) {
+      this.DeliverdRate = value;
+      console.log("🚀 ~ updatePriceValue ~ value:", value);
     },
     async getAiAdvice() {
-      this.ShowAiAdvice=true ;
+      this.ShowAiAdvice = true;
       if (!this.AnalyticsData || this.AnalyticsData.length === 0) {
         console.error("Analytics data is empty or not available.");
         return;
       }
-      const analyticsSummary = this.AnalyticsData
-        .map((data, index) => `Data ${index + 1}: ${JSON.stringify(data)}`)
-        .join("\n");
+      const analyticsSummary = this.AnalyticsData.map(
+        (data, index) => `Data ${index + 1}: ${JSON.stringify(data)}`
+      ).join("\n");
 
       const prompt = `
         Based on the following sales analytics data, provide actionable advice for improving sales in the e-commerce context
         provide a 250 words answer and dont use markdown for text formatting.
         ${analyticsSummary}
       `;
-    
+
       try {
         const response = await axios.post(
-          'https://api.openai.com/v1/chat/completions',
+          "https://api.openai.com/v1/chat/completions",
           {
-            model: 'gpt-4',
+            model: "gpt-4",
             messages: [
-              { role: 'system', content: 'You are an expert sales advisor.' },
-              { role: 'user', content: prompt },
+              { role: "system", content: "You are an expert sales advisor." },
+              { role: "user", content: prompt },
             ],
             max_tokens: 200,
           },
           {
             headers: {
               Authorization: `Bearer ${this.AiToken}`,
-              'Content-Type': 'application/json',
+              "Content-Type": "application/json",
             },
           }
         );
 
         const advice = response.data.choices[0].message.content.trim();
-          this.AiAdvices=advice;
-          
-          console.log("AI Advice:", advice);
+        this.AiAdvices = advice;
+
+        console.log("AI Advice:", advice);
       } catch (error) {
-        console.error("Error fetching AI advice:", error.response?.data || error.message);
+        console.error(
+          "Error fetching AI advice:",
+          error.response?.data || error.message
+        );
       }
-    }
-    ,
+    },
     svg(name) {
       const icons = {
         edit: '<svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#5f6368"><path d="M80 0v-160h800V0H80Zm160-320h56l312-311-29-29-28-28-311 312v56Zm-80 80v-170l448-447q11-11 25.5-17t30.5-6q16 0 31 6t27 18l55 56q12 11 17.5 26t5.5 31q0 15-5.5 29.5T777-687L330-240H160Zm560-504-56-56 56 56ZM608-631l-29-29-28-28 57 57Z"/></svg>',
