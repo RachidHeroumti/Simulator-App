@@ -25,11 +25,11 @@ var vm = new StoreinoApp({
     toSaveData: false,
     ShowAiAdvice: false,
     selectedMonth: "",
+    selectedYear:"",
     AiAdvices: "",
     buyPrice: 0,
     adscost: 0,
     ordersLeadNumber: 0,
-    ordersNumber: "--------------",
     ConfirmedRate: 0,
     DeliverdRate: 0,
     ConfirmationValue: 0,
@@ -103,6 +103,7 @@ var vm = new StoreinoApp({
       "December",
     ];
     this.selectedMonth = monthNames[currnTDate.getMonth()];
+    this.selectedYear=currnTDate.getFullYear();
     console.log("🚀 ~ mounted ~  this.data:", this.data);
     this.AnalyticsData = this.data.AnalyticsData;
     console.log("🚀 ~ mounted ~  this.AnalyticsData:", this.AnalyticsData);
@@ -153,13 +154,42 @@ var vm = new StoreinoApp({
       }
     },
   },
+
   methods: {
     selectTab(tabName) {
       this.activeTab = tabName;
     },
+    convertValueToRate(value,mainValue) {
+    const rate = (value*100)/mainValue ;
+      return Math.round(rate * 100) / 100; ;
+    },
     convertRateToValue(rate, mainValue) {
       const result = (rate / 100) * mainValue;
       return Math.round(result * 100) / 100;
+    },
+    updateConfirmationRateFromInput(rate) {
+      this.ConfirmedRate = rate;
+      this.ConfirmationValue = this.convertRateToValue(rate, this.ordersLeadNumber);
+      console.log("🚀 ~ updateConfirmationRateFromInput ~ rate:", rate);
+    },
+    updateConfirmationValueFromInput(value) {
+      this.ConfirmationValue = value;
+      this.ConfirmedRate = this.convertValueToRate(value, this.ordersLeadNumber);
+      console.log("🚀 ~ updateConfirmationValueFromInput ~ value:", value);
+    },
+    updateDeliveryRateFromInput(rate) {
+      this.DeliverdRate = rate;
+      this.DeliveryValue = this.convertRateToValue(rate, this.ConfirmationValue);
+      console.log("🚀 ~ updateDeliveryRateFromInput ~ rate:", rate);
+    },
+    updateDeliveryValueFromInput(value) {
+      this.DeliveryValue = value;
+      this.DeliverdRate = this.convertValueToRate(value, this.ConfirmationValue);
+      console.log("🚀 ~ updateDeliveryValueFromInput ~  this.DeliverdRate:",  this.DeliverdRate)
+    },
+    updateDeliveryRate(value) {
+      this.DeliverdRate = value;
+      console.log("🚀 ~ updatePriceValue ~ value:", value);
     },
     calculateProfits() {
       const SalePrice = parseFloat(this.SalePrice ?? 0);
@@ -241,14 +271,7 @@ var vm = new StoreinoApp({
       //  this.storageTotalCost = stockagecost * ordersLeadNumber || 0;
       //this.deliveryTotalCost = deliverycost * deliveredRate || 0;
     },
-    updatePriceValue(value) {
-      this.ConfirmedRate = value;
-      console.log("🚀 ~ updatePriceValue ~ value:", value);
-    },
-    updateDeliveryRate(value) {
-      this.DeliverdRate = value;
-      console.log("🚀 ~ updatePriceValue ~ value:", value);
-    },
+
     saveDataAnalytics() {
       const datasetConfig = {
         Profits: { backgroundColor: "#19e557", borderColor: "#19e557" },
@@ -256,35 +279,39 @@ var vm = new StoreinoApp({
         Revenue: { backgroundColor: "#4bc0c0", borderColor: "#4bc0c0" },
         Sales: { backgroundColor: "#f87979", borderColor: "#f87979" },
       };
-
+    
+      const CurrentYear = this.selectedYear;
+    
       const currentMonthData = {
         month: this.selectedMonth,
+        year: CurrentYear, // Add the year to the data
         datasets: Object.entries(datasetConfig).map(([key, config]) => ({
           label: key,
           ...config,
           value: this[key.toLowerCase()] || 0,
         })),
       };
-
+    
       if (!this.AnalyticsData || !Array.isArray(this.AnalyticsData)) {
         this.AnalyticsData = [];
       }
-
+    
+      // Find existing data for the same month and year
       const existingIndex = this.AnalyticsData.findIndex(
-        (data) => data.month === this.selectedMonth
+        (data) => data.month === this.selectedMonth && data.year === CurrentYear
       );
-
+    
       if (existingIndex !== -1) {
-        // Update existing month data
+        // Update existing month data only if the year is the same
         this.$set(this.AnalyticsData, existingIndex, currentMonthData);
       } else {
-        // Add new month data
+        // Add new month data if the same month exists but for a different year
         this.AnalyticsData.push(currentMonthData);
       }
-
+    
       // Update data.AnalyticsData with the latest AnalyticsData
       this.$set(this.data, "AnalyticsData", [...this.AnalyticsData]);
-
+    
       console.log("Updated AnalyticsData:", this.AnalyticsData);
       this.toSaveData = false;
     },

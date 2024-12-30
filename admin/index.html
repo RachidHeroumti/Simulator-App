@@ -19,7 +19,7 @@
           style="background-color: #4a78cf"
           class="w-full text-center p-3 text-white"
         >
-          {{'appName'|t}}  
+          {{'appName'|t}}
         </h1>
         <div class="tabs">
           <div class="tab-headers">
@@ -57,7 +57,9 @@
               <div v-if="tab.name === 'main'">
                 <div class="flex justify-between">
                   <div class="w-3/4">
-                    <div class="gap-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 items-center">
+                    <div
+                      class="gap-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 items-center"
+                    >
                       <div>
                         <label
                           class="flex items-center p-1 space-x-2 text-sm font-medium text-gray-700 gap-2"
@@ -68,8 +70,8 @@
                         <input
                           v-model="buyPrice"
                           type="text"
-                          placeholder="Enter production cost"
-                          class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
+                          placeholder="Buy Price"
+                          class="mt-1 w-full px-3 py-2 border border-gray-300 required:border-red-500 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
                         />
                       </div>
 
@@ -131,19 +133,17 @@
                           class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
                         />
                       </div>
-                     
                     </div>
-                    <div class=" flex  gap-4 pt-2 w-full inputRanges "> 
+                    <div class="flex flex-wrap gap-4 pt-2 w-full inputRanges">
                       <div>
                         <label
-                          class="flex items-center p-1 space-x-2 text-sm font-medium text-gray-700 gap-2"
+                          class="flex flex-wrap items-center p-1 space-x-2 text-sm font-medium text-gray-700 gap-2"
                         >
-                          <span>{{'confirmation'|t}} </span>
+                          <span>{{'confirmation'|t}}</span>
                           <span v-html="svg('confirmed')"></span>
                         </label>
-                        <div
-                          class="flex   items-center w-full max-w-md gap-2"
-                        >
+                        <div class="flex items-center w-full max-w-md gap-2">
+                          <!-- Range Input for ConfirmedRate -->
                           <input
                             type="range"
                             id="price"
@@ -153,8 +153,9 @@
                             step="1"
                             :value="ConfirmedRate"
                             class="w-full h-2 bg-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            @input="updatePriceValue($event.target.value)"
+                            @input="updateConfirmationRateFromInput($event.target.value)"
                           />
+                          <!-- Text Input for ConfirmedRate -->
                           <div
                             class="p-1 flex items-center space-x-1 text-center text-lg border border-gray-300 rounded-lg bg-gray-50 focus:outline-none"
                           >
@@ -162,25 +163,25 @@
                               type="text"
                               id="priceInput"
                               :value="ConfirmedRate"
-                              readonly
-                              class="bg-transparent w-10 outline-none text-center"
+                              @input="updateConfirmationRateFromInput($event.target.value)"
+                              class="bg-transparent w-12 outline-none text-center"
                             />
                             <span class="text-lg font-medium text-gray-700"
                               >%</span
                             >
                           </div>
+                          <!-- Text Input for ConfirmationValue -->
                           <div
-                          class="p-1 flex items-center space-x-1 text-center text-lg border border-gray-300 rounded-lg bg-gray-50 focus:outline-none"
-                        >
-                          <input
-                            type="text"
-                            id="priceInput"
-                            :value="ConfirmationValue"
-                            readonly
-                            class="bg-transparent w-10 outline-none text-center"
-                          />
-                         
-                        </div>
+                            class="p-1 flex items-center space-x-1 text-center text-lg border border-gray-300 rounded-lg bg-gray-50 focus:outline-none"
+                          >
+                            <input
+                              type="text"
+                              id="valueInput"
+                              :value="ConfirmationValue"
+                              @input="updateConfirmationValueFromInput($event.target.value)"
+                              class="bg-transparent outline-none text-center"
+                            />
+                          </div>
                         </div>
                       </div>
 
@@ -188,12 +189,11 @@
                         <label
                           class="flex items-center p-1 space-x-2 text-sm font-medium text-gray-700 gap-2"
                         >
-                          <span>{{'delivery'|t}} </span>
+                          <span>{{'delivery'|t}}</span>
                           <span v-html="svg('deleivred')"></span>
                         </label>
-                        <div
-                          class="flex   items-center w-full max-w-md gap-2"
-                        >
+                        <div class="flex items-center w-full max-w-md gap-2">
+                          <!-- Range Input for DeliverdRate -->
                           <input
                             type="range"
                             id="price"
@@ -203,8 +203,9 @@
                             step="1"
                             :value="DeliverdRate"
                             class="w-full h-2 bg-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            @input="updateDeliveryRate($event.target.value)"
+                            @input="updateDeliveryRateFromInput($event.target.value)"
                           />
+                          <!-- Text Input for DeliverdRate -->
                           <div
                             class="p-1 flex items-center space-x-1 text-center text-lg border border-gray-300 rounded-lg bg-gray-50 focus:outline-none"
                           >
@@ -212,26 +213,25 @@
                               type="text"
                               id="priceInput"
                               :value="DeliverdRate"
-                              readonly
-                              class="bg-transparent w-10 outline-none text-center"
+                              @input="updateDeliveryRateFromInput($event.target.value)"
+                              class="bg-transparent w-12 outline-none text-center"
                             />
                             <span class="text-lg font-medium text-gray-700"
                               >%</span
                             >
                           </div>
-
+                          <!-- Text Input for DeliveryValue -->
                           <div
-                          class="p-1 flex items-center space-x-1 text-center text-lg border border-gray-300 rounded-lg bg-gray-50 focus:outline-none"
-                        >
-                          <input
-                            type="text"
-                            id="priceInput"
-                            :value="DeliveryValue"
-                            readonly
-                            class="bg-transparent w-10 outline-none text-center"
-                          />
-                         
-                        </div>
+                            class="p-1 flex items-center space-x-1 text-center text-lg border border-gray-300 rounded-lg bg-gray-50 focus:outline-none"
+                          >
+                            <input
+                              type="text"
+                              id="valueInput"
+                              :value="DeliveryValue"
+                              @input="updateDeliveryValueFromInput($event.target.value)"
+                              class="bg-transparent outline-none text-center"
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -247,7 +247,7 @@
                           class="cursor-pointer text-red-500 hover:text-red-700"
                         ></span>
                       </h1>
-                      <div v-if="ShowDetails" class="gap-2 flex flex-wrap ">
+                      <div v-if="ShowDetails" class="gap-2 flex flex-wrap">
                         <div class="flex flex-col gap-2">
                           <div>
                             <label class="block text-sm font-medium">
@@ -263,7 +263,7 @@
                           </div>
                           <div>
                             <label class="block text-sm font-medium">
-                               {{'adsCostPerConfirmation'|t}}
+                              {{'adsCostPerConfirmation'|t}}
                             </label>
                             <input
                               v-model="confirmationLeadCostAds"
@@ -275,7 +275,7 @@
                           </div>
                           <div>
                             <label class="block text-sm font-medium">
-                             {{'adsCostPerDelivery'|t}}
+                              {{'adsCostPerDelivery'|t}}
                             </label>
                             <input
                               v-model="realAdsCost"
@@ -303,7 +303,7 @@
 
                           <div>
                             <label class="block text-sm font-medium">
-                             {{'revenue'|t}}
+                              {{'revenue'|t}}
                             </label>
                             <input
                               v-model="revenue"
@@ -326,12 +326,11 @@
                               class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
                             />
                           </div>
-
                         </div>
                         <div class="flex flex-col gap-2">
                           <div>
                             <label class="block text-sm font-medium">
-                               {{'investment'|t}}
+                              {{'investment'|t}}
                             </label>
                             <input
                               v-model="investment"
@@ -426,8 +425,6 @@
                           class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
                         />
                       </div>
-
-                     
                     </div>
                   </div>
                 </div>
@@ -438,7 +435,7 @@
                     style="border: 2px solid #4a78cf; color: #4a78cf"
                     @click="toSaveData=true"
                   >
-                   {{'addToAnalytics'|t}}
+                    {{'addToAnalytics'|t}}
                   </button>
                 </div>
 
@@ -464,42 +461,56 @@
                       <label
                         for="month-select"
                         class="block text-sm font-medium text-gray-600 mb-2"
-                        > {{'selectMonthLabel'|t}}</label
+                      >
+                        {{'selectMonthLabel'|t}}</label
                       >
                       <select
                         id="month-select"
                         v-model="selectedMonth"
                         class="w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-sky-500"
                       >
-                        <option value="January">  {{'January'|t}}</option>
-                        <option value="February"> {{'February'|t}}</option>
-                        <option value="March"> {{'March'|t}}</option>
-                        <option value="April"> {{'April'|t}}</option>
-                        <option value="May"> {{'May'|t}}</option>
-                        <option value="June"> {{'June'|t}}</option>
-                        <option value="July"> {{'July'|t}}</option>
-                        <option value="August"> {{'August'|t}}</option>
-                        <option value="September"> {{'September'|t}}</option>
-                        <option value="October"> {{'October'|t}}</option>
-                        <option value="November"> {{'November'|t}}</option>
-                        <option value="December"> {{'December'|t}}</option>
+                        <option value="January">{{'January'|t}}</option>
+                        <option value="February">{{'February'|t}}</option>
+                        <option value="March">{{'March'|t}}</option>
+                        <option value="April">{{'April'|t}}</option>
+                        <option value="May">{{'May'|t}}</option>
+                        <option value="June">{{'June'|t}}</option>
+                        <option value="July">{{'July'|t}}</option>
+                        <option value="August">{{'August'|t}}</option>
+                        <option value="September">{{'September'|t}}</option>
+                        <option value="October">{{'October'|t}}</option>
+                        <option value="November">{{'November'|t}}</option>
+                        <option value="December">{{'December'|t}}</option>
                       </select>
                     </div>
-                    <div
-                      class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded-md"
-                    >
-                      <span class="font-bold">{{'note'|t}}:</span>{{'changesMadeWillApply'|t}}
+                    <div class="mb-6">
+                      <label
+                        for="month-select"
+                        class="block text-sm font-medium text-gray-600 mb-2"
+                      >
+                        {{'selectYearLabel'|t}}</label
+                      >
+                      <select
+                        id="year-select"
+                        v-model="selectedYear"
+                        class="w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-sky-500"
+                      >
+                        <option value="2024">{{'2024'|t}}</option>
+                        <option value="2025">{{'2025'|t}}</option>
+                        <option value="2026">{{'2026'|t}}</option>
+                        <option value="2027">{{'2027'|t}}</option>
+                      </select>
                     </div>
+                  
                     <button
                       style="background-color: #734e94; color: white"
                       class="font-medium p-2 w-full rounded-lg mt-4"
                       @click="saveDataAnalytics"
                     >
-                       {{'save'|t}}
+                      {{'save'|t}}
                     </button>
                   </div>
                 </div>
-
               </div>
               <div
                 v-show="tab.name === 'analytics'"
@@ -519,7 +530,7 @@
                       style="color: #fff; background-color: chocolate"
                       class="text-2xl font-bold items-center text-gray-800 flex w-full justify-between p-2"
                     >
-                      <span> {{'aiAdvice'|t}}</span>
+                      <span > {{'aiAdvice'|t}}</span>
                       <span
                         class="shadow-md bg-white"
                         v-html="svg('cancel')"
@@ -552,23 +563,23 @@
                   style="max-width: 600px; max-height: 400px"
                 ></canvas>
 
-                <!-- Table of Data -->
+
                 <div class="p-2 overflow-x-auto w-full gap-2">
                   <div class="w-full flex justify-end p-1">
                     <button
                       style="background-color: chocolate; color: white"
                       class="flex justify-center items-center p-2"
                       @click="getAiAdvice"
+
                     >
                       {{'getAiAdvice'|t}}
                     </button>
                   </div>
-                  <table
-                    class="table-auto border-collapse border border-gray-300 w-full text-left"
-                  >
+                  <table class="table-auto border-collapse border border-gray-300  text-left">
                     <thead>
                       <tr>
                         <th class="border border-gray-300 px-4 py-2">Month</th>
+                        <th class="border border-gray-300 px-4 py-2">Year</th> <!-- New column for Year -->
                         <th
                           v-for="(dataset, index) in AnalyticsData[0]?.datasets || []"
                           :key="index"
@@ -586,6 +597,9 @@
                         <td class="border border-gray-300 px-4 py-2">
                           {{ monthData.month }}
                         </td>
+                        <td class="border border-gray-300 px-4 py-2">
+                          {{ monthData.year }} <!-- Display the year -->
+                        </td>
                         <td
                           v-for="(dataset, colIndex) in monthData.datasets"
                           :key="colIndex"
@@ -597,6 +611,7 @@
                     </tbody>
                   </table>
                 </div>
+
               </div>
               <div
                 v-if="tab.name === 'settings'"
