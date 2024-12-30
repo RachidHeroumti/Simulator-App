@@ -529,7 +529,7 @@
                 </div>
               </div>
               <div
-                v-show="tab.name === 'analytics'"
+                v-else="tab.name === 'analytics'"
                 class="w-full flex flex-col lg:flex-row justify-center gap-4 relative"
                 style="min-height: 500px"
               >
@@ -578,7 +578,6 @@
                   class=""
                   style="max-width: 600px; max-height: 400px"
                 ></canvas>
-
 
                 <div class="p-2 overflow-x-auto w-full gap-2">
                   <div class="w-full flex justify-end p-1">
@@ -629,6 +628,7 @@
                 </div>
 
               </div>
+
               <div
                 v-if="tab.name === 'settings'"
                 class="flex flex-col sm:flex-row gap-6"
