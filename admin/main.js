@@ -37,8 +37,7 @@ var vm = new StoreinoApp({
     confirmationcost: 0,
     stockagecost: 0,
     AiendPoint: "https://api.openai.com/v1/chat/completions",
-    AiToken:
-      "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",
+    AiToken:"",
     deliverycost: 0,
     fixedCost: 0,
     SalePrice: 0,
